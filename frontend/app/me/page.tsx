@@ -11,10 +11,10 @@ export default function Me() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        await api.get("/me"); // 🔐 backend check
+        await api.get("/me"); //backend check
         setLoading(false);
       } catch (error) {
-        router.push("/signin"); // ❌ not logged in
+        router.push("/signin"); //not logged in
       }
     };
 
@@ -22,7 +22,7 @@ export default function Me() {
   }, [router]);
 
   const handleLogout = async () => {
-    await api.post("/auth/logout");
+    await api.post("/logout");
     router.push("/signin");
   };
 
