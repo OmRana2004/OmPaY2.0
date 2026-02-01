@@ -1,5 +1,6 @@
 "use client";
 
+import { useSignIn } from "@clerk/nextjs";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
@@ -7,11 +8,12 @@ import { Input } from "@/components/ui/input";
 import api from "@/lib/api";
 import {
   IconBrandGithub,
-  IconBrandGoogle
+  IconBrandGoogle,
 } from "@tabler/icons-react";
 
 export default function SignupPage() {
   const router = useRouter();
+  const { signIn, isLoaded } = useSignIn();
 
   const [form, setForm] = useState({
     firstName: "",
@@ -27,6 +29,7 @@ export default function SignupPage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  /* ---------------- Normal signup (backend) ---------------- */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
@@ -39,6 +42,24 @@ export default function SignupPage() {
       setError(err.response?.data?.message || "Signup failed");
     } finally {
       setLoading(false);
+    }
+  };
+
+  /* ---------------- Social login (Clerk) ---------------- */
+  const handleSocialLogin = async (
+    provider: "oauth_google" | "oauth_github"
+  ) => {
+    if (!isLoaded) return;
+
+    try {
+      await signIn.authenticateWithRedirect({
+        strategy: provider,
+        redirectUrl: "/sso-callback",
+        redirectUrlComplete: "/me",
+      });
+    } catch (err) {
+      console.error("Social login error:", err);
+      setError("Social login failed");
     }
   };
 
@@ -78,7 +99,7 @@ export default function SignupPage() {
             />
           </Field>
 
-          {/* Email (full width) */}
+          {/* Email */}
           <Field label="Email" className="sm:col-span-2">
             <Input
               name="email"
@@ -90,7 +111,7 @@ export default function SignupPage() {
             />
           </Field>
 
-          {/* Password (full width) */}
+          {/* Password */}
           <Field label="Password" className="sm:col-span-2">
             <Input
               name="password"
@@ -99,6 +120,7 @@ export default function SignupPage() {
               value={form.password}
               onChange={handleChange}
               className="dark-input"
+              autoComplete="current-password"
             />
           </Field>
 
@@ -126,8 +148,17 @@ export default function SignupPage() {
           <div className="sm:col-span-2 my-2 h-px bg-neutral-800" />
 
           {/* Social buttons */}
-          <SocialButton icon={<IconBrandGithub />} label="GitHub" />
-          <SocialButton icon={<IconBrandGoogle />} label="Google" />
+          <SocialButton
+            icon={<IconBrandGithub />}
+            label="Continue with GitHub"
+            onClick={() => handleSocialLogin("oauth_github")}
+          />
+
+          <SocialButton
+            icon={<IconBrandGoogle />}
+            label="Continue with Google"
+            onClick={() => handleSocialLogin("oauth_google")}
+          />
         </form>
       </div>
     </div>
@@ -156,13 +187,16 @@ function Field({
 function SocialButton({
   icon,
   label,
+  onClick,
 }: {
   icon: React.ReactNode;
   label: string;
+  onClick: () => void;
 }) {
   return (
     <button
       type="button"
+      onClick={onClick}
       className="flex h-10 w-full items-center gap-2 rounded-md 
         border border-neutral-700 bg-neutral-800 
         px-4 text-sm text-neutral-200 
