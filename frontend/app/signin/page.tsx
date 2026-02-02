@@ -95,7 +95,7 @@ export default function SigninPage() {
   );
 }
 
-/* ---------- helpers ---------- */
+/* ---------- helpers --------- */
 
 function Field({
   label,
