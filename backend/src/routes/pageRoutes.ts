@@ -4,6 +4,7 @@ import signin from "../controllers/authControllers/signin";
 import logout from "../controllers/authControllers/logout";
 import authMiddleware from "../middlewares/authMiddleware";
 
+
 import me from "../controllers/authControllers/me"
 
 
@@ -14,6 +15,8 @@ const AuthMiddleware = authMiddleware as unknown as RequestHandler;
 router.post("/signup", signup);
 router.post("/signin", signin);
 router.post("/logout", logout);
+
+
 
 router.get("/me", AuthMiddleware, me);
 

@@ -1,19 +1,14 @@
 "use client";
 
-import { useSignIn } from "@clerk/nextjs";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import api from "@/lib/api";
-import {
-  IconBrandGithub,
-  IconBrandGoogle,
-} from "@tabler/icons-react";
+import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
 
 export default function SignupPage() {
   const router = useRouter();
-  const { signIn, isLoaded } = useSignIn();
 
   const [form, setForm] = useState({
     firstName: "",
@@ -29,7 +24,7 @@ export default function SignupPage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  /* ---------------- Normal signup (backend) ---------------- */
+  // signup (backend)
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
@@ -45,33 +40,13 @@ export default function SignupPage() {
     }
   };
 
-  /* ---------------- Social login (Clerk) ---------------- */
-  const handleSocialLogin = async (
-    provider: "oauth_google" | "oauth_github"
-  ) => {
-    if (!isLoaded) return;
-
-    try {
-      await signIn.authenticateWithRedirect({
-        strategy: provider,
-        redirectUrl: "/sso-callback",
-        redirectUrlComplete: "/me",
-      });
-    } catch (err) {
-      console.error("Social login error:", err);
-      setError("Social login failed");
-    }
-  };
-
   return (
     <div className="flex min-h-screen items-center justify-center bg-neutral-950 px-4">
       <div className="w-full max-w-lg rounded-2xl border border-neutral-800 bg-neutral-900 p-6 shadow-2xl">
         <h2 className="text-xl font-semibold text-neutral-100">
           Create your account
         </h2>
-        <p className="mt-1 text-sm text-neutral-400">
-          Sign up to continue
-        </p>
+        <p className="mt-1 text-sm text-neutral-400">Sign up to continue</p>
 
         <form
           onSubmit={handleSubmit}
@@ -126,9 +101,7 @@ export default function SignupPage() {
 
           {/* Error */}
           {error && (
-            <p className="sm:col-span-2 text-sm text-red-500">
-              {error}
-            </p>
+            <p className="sm:col-span-2 text-sm text-red-500">{error}</p>
           )}
 
           {/* Submit */}
@@ -151,13 +124,17 @@ export default function SignupPage() {
           <SocialButton
             icon={<IconBrandGithub />}
             label="Continue with GitHub"
-            onClick={() => handleSocialLogin("oauth_github")}
+            onClick={() => {
+              alert("Social login coming soon 🚧");
+            }}
           />
 
           <SocialButton
             icon={<IconBrandGoogle />}
             label="Continue with Google"
-            onClick={() => handleSocialLogin("oauth_google")}
+            onClick={() => {
+              alert("Social login coming soon 🚧");
+            }}
           />
         </form>
       </div>
