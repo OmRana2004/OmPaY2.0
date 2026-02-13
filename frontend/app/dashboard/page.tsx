@@ -23,7 +23,7 @@ export default function Me() {
 
   const handleLogout = async () => {
     await api.post("/logout");
-    router.push("/signin");
+    router.push("/auth/signin");
   };
 
   if (loading) {

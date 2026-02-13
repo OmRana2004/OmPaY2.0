@@ -28,7 +28,7 @@ export default function SigninPage() {
 
     try {
       await api.post("/signin", form);
-      router.push("/me");
+      router.push("/dashboard");
     } catch (err: any) {
       setError(err.response?.data?.message || "Signin failed");
     } finally {

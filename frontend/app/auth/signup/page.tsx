@@ -32,7 +32,7 @@ export default function SignupPage() {
 
     try {
       await api.post("/signup", form);
-      router.push("/me");
+      router.push("/auth/signin");
     } catch (err: any) {
       setError(err.response?.data?.message || "Signup failed");
     } finally {

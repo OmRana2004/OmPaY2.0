@@ -24,7 +24,7 @@ const signin = async (req: Request, res: Response) => {
 
         if (!user) {
             return res.status(401).json({
-                message: "Invalid email"
+                message: "Invalid email or password"
             });
         }
          // compare password
@@ -32,7 +32,7 @@ const signin = async (req: Request, res: Response) => {
 
          if(!isPasswordValid) {
             return res.status(401).json({
-                message: "Invalid password"
+                message: "Invalid email or password"
             });
          }
 
@@ -48,7 +48,7 @@ const signin = async (req: Request, res: Response) => {
             httpOnly: true,
             sameSite: "lax",
             secure: process.env.NODE_ENV === "production",
-            maxAge: 7 * 24 * 60 * 1000, // 7 days
+            maxAge: 7 * 24 * 60 * 60 * 1000 , // 7 days
          });
 
          return res.status(200).json({
